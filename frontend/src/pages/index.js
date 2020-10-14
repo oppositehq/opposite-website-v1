@@ -1,21 +1,35 @@
 import React from "react";
 import { graphql, useStaticQuery } from "gatsby";
-import Layout from "../components/layout";
-import ArticlesComponent from "../components/articles";
-import "../assets/css/main.css";
+import { AnimateSharedLayout, AnimatePresence } from "framer-motion";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Modal } from "../components/team-modal";
+import { Cards } from "../components/team-card";
+import "../assets/css/style.css";
+
+function Team({ match }) {
+  let { id } = match.params;
+
+  return (
+    <>
+      <Cards selectedId={id} />
+      <AnimatePresence>
+        {id && <Modal id={id} key="modal" />}
+      </AnimatePresence>
+    </>
+  );
+}
 
 const IndexPage = () => {
   const data = useStaticQuery(query);
 
   return (
-    <Layout seo={data.strapiHomepage.seo}>
-      <div className="uk-section">
-        <div className="uk-container uk-container-large">
-          <h1>{data.strapiHomepage.hero.title}</h1>
-          <ArticlesComponent articles={data.allStrapiArticle.edges} />
-        </div>
-      </div>
-    </Layout>
+    <div className="container">
+      <AnimateSharedLayout type="crossfade">
+        <Router>
+          <Route path={["/:id", "/"]} component={Team} />
+        </Router>
+      </AnimateSharedLayout>
+    </div>
   );
 };
 
